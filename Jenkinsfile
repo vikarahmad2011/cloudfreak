@@ -2,7 +2,7 @@ pipeline {
   agent any
     tools {
       maven 'maven3'
-                 jdk 'JDK11'
+                 jdk 'JDK8'
     }
     stages {      
         stage('Build maven ') {
@@ -19,19 +19,15 @@ pipeline {
            }
         }
          
-        stage('Docker Build') {
-    	    agent any
-          steps {
-      	    sh 'docker build -t initsixcloud/petclinic:latest .'
-        }
-      }
-        stage('Docker Push') {
-    	    agent any
+        stage('Build docker image') {
            steps {
-      	     withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-        	 sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-               sh 'docker push initsixcloud/petclinic:latest'
+               script {         
+                 def customImage = docker.build('initsixcloud/petclinic', "./docker")
+                 docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                 customImage.push("${env.BUILD_NUMBER}")
+                 }                     
+           }
         }
-      }
+	  }
     }
 }
