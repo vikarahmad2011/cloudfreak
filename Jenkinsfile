@@ -29,7 +29,8 @@ pipeline {
 	  }
 	stage('Push Docker Image') {
            steps {
-                withDockerRegistry([credentialsId: "docker_auth", url: "https://registry.hub.docker.com/"]) {
+                docker.withRegistry('https://registry.hub.docker.com', 'dockerhub')
+                 {
                     bat "docker push IMAGE_NAME:latest"
                 }
             }
