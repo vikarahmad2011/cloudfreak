@@ -1,3 +1,4 @@
+def ssh_user=jenkins
 pipeline {
   agent any
     tools {
