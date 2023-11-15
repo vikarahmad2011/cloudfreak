@@ -22,7 +22,7 @@ pipeline {
        stage('Build Docker Image'){
 	   steps {
 	       script {
-		 sh 'docker build -t :latest .'
+		 sh 'docker build -t initsixcloud/petclinic:latest .'
 		}
 	     }
 	 }
