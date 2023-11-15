@@ -19,16 +19,21 @@ pipeline {
            }
         }
          
-       stage('Build docker image') {
-           steps {
-               script {         
-                 def customImage = docker.build('initsixcloud/petclinic', "./docker")
-		 
-                 docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                 customImage.push("${env.BUILD_NUMBER}")
-                 }                     
-           }
-        }
-	  }
+       stage('Build Docker Image'){
+	   steps {
+	       script {
+		 sh 'docker build -t :latest .'
+		}
+	     }
+	 }
+	stage('Deploy Docker Image') {
+	    steps {
+		script {
+		withCredentials([string(credentialsId: 'dockerhub', variable: 'dockerhub')]){
+		   sh 'docker login -u vikar11 -p $(dockerhub)'
+		}
+	    }
+	}
+          }	
     }
 }
