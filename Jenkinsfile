@@ -24,6 +24,7 @@ pipeline {
                script {         
                  def customImage = docker.build('initsixcloud/petclinic', "./docker")
                  docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+	         docker login -u "vikar11" -p "W@qar78684" docker.io
                  customImage.push("${env.BUILD_NUMBER}")
                  }                     
            }
