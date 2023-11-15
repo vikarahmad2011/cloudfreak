@@ -19,21 +19,15 @@ pipeline {
            }
         }
          
-       node {
-
-         checkout scm
-         def dockerImage
-
-         stage('Build image') {
-           dockerImage = docker.build("initsixcloud/petclinic:latest")
-         }
-
-         stage('Push image') {
-           docker.withRegistry('https://registry-1.docker.io/v2/', 'dockerhub') {
-             dockerImage.push()
+       stage('Build docker image') {
+           steps {
+               script {         
+                 def customImage = docker.build('initsixcloud/petclinic', "./docker")
+                 docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                 customImage.push("${env.BUILD_NUMBER}")
+                 }                     
            }
-         }
-
-       }	
+        }
+	  }
     }
 }
