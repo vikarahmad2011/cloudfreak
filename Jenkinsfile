@@ -29,11 +29,23 @@ pipeline {
            }
         }
 	  }
-       stage('sonar-scanner') {
-	  def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-	  withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
-	    sh "${sonarquberScannerHome}/bin/sonar-scanner -e -Dsonar,host.url=http://51.20.127.14:9000/ -Dsonar.login=${sonarLogin} -Dsonar.projectName=gs.gradle -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=complete/src/main/ -Dsonar.test=complete/src/test/ -Dsonar.language=java"
-	  }
-	}
+       stage(SonarQube Analysis'){
+	  def scannerHome  tool 'SonarQube'
+	  withSonarQubeEnv{'SonarQube'}{
+	  sh 
+	***/var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube/bin/sonar-scanner\
+	 -D sonar.projectVersion=1.0-SNAPSHOT\
+	  -D sonar.login=admin\
+	  -D sonar.password=admin\
+	  -D sonar.projectBaseDir/Var/lib/jenkins/workspace/jenkins-sonar/\
+	 -D sonar.projectKey=petclinic\
+	 -D sonar.sourceEncoding=UTF-8\
+	 -D sonar.language=java \
+	 -D sonar.source=my-app/src/main\
+	 -D sonar.tests=my.app/src/test\
+	 -D sonar.host.url=http://51.20.127.14:9000/***
+	 }
+	 }
+	 }
     }
 }
