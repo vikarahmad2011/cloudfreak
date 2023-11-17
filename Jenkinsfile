@@ -31,7 +31,7 @@ pipeline {
 	  }
       stage("Deploy to Sonar") {
             steps{
-                withSonarQubeEnv(installationName: 'sonar-scanner', credentialsId: 'sonar-scanner') {
+                withSonarQubeEnv(installationName: 'sonar-scanner', credentialsId: 'sonarQube') {
                     sh "${ tool ("sonar-scanner")}/sonar-scanner -Dsonar.projectKey=petclinic -Dsonar.projectName=hellospringboot -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=src"
                 }
             }
