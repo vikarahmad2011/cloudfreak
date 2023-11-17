@@ -29,17 +29,11 @@ pipeline {
            }
         }
 	  }
-
-       mvn sonar:sonar \
-       -Dsonar.projectKey=petclinic \
-       -Dsonar.host.url=http://51.20.127.14:9000 \
-       -Dsonar.login=a4851866bde9ba1d143f34b93597ff8a1abb0138
-       stage("Deploy to Sonar") {
-            steps{
-                withSonarQubeEnv(installationName: 'sonar-scanner', credentialsId: 'sonar-token') {
-                    sh "${ tool ("sonar-scanner")}/sonar-scanner -Dsonar.projectKey=hellospringboot -Dsonar.projectName=hellospringboot -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=src"
-                }
-            }
-        }
+       stage('sonar-scanner') {
+	  def sonarqubeScannerHome = tool name: 'sonar', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+	  withCredentials([string(credentialsId: 'sonar', variable: 'sonarLogin')]) {
+	    sh "${sonarquberScannerHome}/bin/sonar-scanner -e -Dsonar,host.url=http://51.20.127.14:9000/ -Dsonar.login=${sonarLogin} -Dsonar.projectName=gs.gradle -Dsonar.projectVersion=${env.BUILD_NUMBER} -Dsonar.projectKey=GS -Dsonar.sources=complete/src/main/ -Dsonar.test=complete/src/test/ -Dsonar.language=java"
+	  }
+	}
     }
 }
