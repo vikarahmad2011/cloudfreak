@@ -29,6 +29,11 @@ pipeline {
            }
         }
 	  }
+
+       mvn sonar:sonar \
+       -Dsonar.projectKey=petclinic \
+       -Dsonar.host.url=http://51.20.127.14:9000 \
+       -Dsonar.login=a4851866bde9ba1d143f34b93597ff8a1abb0138
        stage("Deploy to Sonar") {
             steps{
                 withSonarQubeEnv(installationName: 'sonar-scanner', credentialsId: 'sonar-token') {
