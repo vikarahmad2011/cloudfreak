@@ -11,7 +11,13 @@ pipeline {
                     sh 'mvn  clean install package'
             }
         }
-        
+     stage("Deploy to Sonar") {
+            steps{
+                withSonarQubeEnv(installationName: 'sonar-scanner', credentialsId: 'sonarQube') {
+                    sh "${ tool ("sonar-scanner")}/sonar-scanner -Dsonar.projectKey=petclinic -Dsonar.projectName=hellospringboot -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=src"
+                }
+            }
+        }
         stage('Copy Artifact') {
            steps { 
                    sh 'pwd'
@@ -29,12 +35,6 @@ pipeline {
            }
         }
 	  }
-      stage("Deploy to Sonar") {
-            steps{
-                withSonarQubeEnv(installationName: 'sonar-scanner', credentialsId: 'sonarQube') {
-                    sh "${ tool ("sonar-scanner")}/sonar-scanner -Dsonar.projectKey=petclinic -Dsonar.projectName=hellospringboot -Dsonar.sourceEncoding=UTF-8 -Dsonar.sources=src"
-                }
-            }
-        }
+      
     }
 }
